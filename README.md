@@ -19,7 +19,7 @@ namespace App\Utility;
 class FcmService {
 
     const FCM_URL = 'https://fcm.googleapis.com/fcm/send';
-    const FCM_KEY = "FCM_SERVER_KEY";
+    const FCM_KEY = "YOUR_FCM_SERVER_KEY";
     const TOKEN_MULTIPLE = "multiple";
     const TOKEN_SINGLE = "single";
     const FCM_TITLE = "Product";
@@ -29,7 +29,22 @@ class FcmService {
     public function send($title, $body, $type, $token) {
         $notification = array('title' => $title, 'body' => $body, 'sound' => 'default', 'badge' => '1');
 
-        $arrayToSend = array('notification' => $notification, 'priority' => 'high', 'timeToLive' => self::FCM_EXPITY);
+        $arrayToSend = array(
+            'notification' => $notification,
+            'priority' => 'high',
+            'timeToLive' => self::FCM_EXPITY,
+            "android" => ['ttl' => self::FCM_EXPITY . "s"],
+            'apns' => [
+                'headers' => [
+                    'apns-priority' => "10"
+                ]
+            ],
+            'webpush' => [
+                'headers' => [
+                    'TTL' => self::FCM_EXPITY
+                ]
+            ],
+        );
 
         if ($type == self::TOKEN_SINGLE) {
             $arrayToSend['to'] = $token;
